@@ -1,0 +1,99 @@
+- hosts: app
+  become: yes
+  vars:
+    app_user: ubuntu
+    app_dir: /home/ubuntu/mern-app
+  tasks:
+    - name: update apt
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: install required packages
+      apt:
+        name:
+          - git
+          - curl
+          - nginx
+          - build-essential
+          - python3-pip
+        state: present
+
+    - name: install Node.js 18.x
+      shell: curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
+      args:
+        creates: /usr/bin/node
+
+    - name: ensure pm2 installed globally
+      npm:
+        name: pm2
+        global: yes
+        state: present
+
+    - name: create app directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        mode: '0755'
+
+    - name: clone repo (use deploy key or HTTPS token)
+      git:
+        repo: 'git@github.com:YOUR_USER/YOUR_MERN_REPO.git'
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+      become_user: "{{ app_user }}"
+
+    - name: install backend deps
+      npm:
+        path: "{{ app_dir }}/server"
+        production: yes
+      become_user: "{{ app_user }}"
+
+    - name: copy env file
+      copy:
+        dest: "{{ app_dir }}/server/.env"
+        content: |
+          PORT=5000
+          MONGO_URI={{ lookup('env','MONGO_URI') | default('') }}
+          CLOUDINARY_CLOUD_NAME={{ lookup('env','CLOUDINARY_CLOUD_NAME') | default('') }}
+          CLOUDINARY_API_KEY={{ lookup('env','CLOUDINARY_API_KEY') | default('') }}
+          CLOUDINARY_API_SECRET={{ lookup('env','CLOUDINARY_API_SECRET') | default('') }}
+        owner: "{{ app_user }}"
+      no_log: true
+
+    - name: copy pm2 ecosystem
+      copy:
+        src: files/pm2-ecosystem.config.js
+        dest: "{{ app_dir }}/server/ecosystem.config.js"
+        owner: "{{ app_user }}"
+
+    - name: start app with pm2
+      become_user: "{{ app_user }}"
+      shell: |
+        cd {{ app_dir }}/server && pm2 startOrRestart ecosystem.config.js && pm2 save
+
+    - name: configure nginx
+      template:
+        src: templates/nginx-mern.j2
+        dest: /etc/nginx/sites-available/mern
+
+    - name: enable nginx site
+      file:
+        src: /etc/nginx/sites-available/mern
+        dest: /etc/nginx/sites-enabled/mern
+        state: link
+
+    - name: remove default nginx
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: test nginx config
+      command: nginx -t
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

@@ -1,0 +1,2 @@
+mongo_uri: "mongodb+srv://<user>:<password>@cluster"
+cloudinary_name: "your-cloud-name"

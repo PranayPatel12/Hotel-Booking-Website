@@ -1,0 +1,20 @@
+server {
+    listen 80;
+    server_name  _;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:5000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location / {
+        # If you build frontend and place in server/public (or serve from client build)
+        root /home/ubuntu/mern-app/client/build;
+        index index.html index.htm;
+        try_files $uri /index.html;
+    }
+}
