@@ -39,7 +39,7 @@
 
     - name: clone repo (use deploy key or HTTPS token)
       git:
-        repo: 'git@github.com:YOUR_USER/YOUR_MERN_REPO.git'
+        repo: 'https://github.com/PranayPatel12/Hotel-Booking-Website.git'
         dest: "{{ app_dir }}"
         version: main
         force: yes
@@ -47,7 +47,7 @@
 
     - name: install backend deps
       npm:
-        path: "{{ app_dir }}/server"
+        path: "{{ app_dir }}/backend"
         production: yes
       become_user: "{{ app_user }}"
 
