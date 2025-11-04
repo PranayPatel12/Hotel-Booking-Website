@@ -5,7 +5,7 @@ import SignUp from './pages/SignUp/SignUp';
 import HomePage from './pages/HomePage/HomePage';
 import PrivateRoute from "./components/routes/Private/Private"
 import AdminRoutes from "./components/routes/Admin/Admin"
-import UserDashboard from './pages/User/UserDashboard/userDashboard';
+import UserDashboard from './pages/User/UserDashboard/UserDashboard';
 import YourOrder from './pages/User/YourOrder/YourOrder';
 import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import CreatePost from './pages/Admin/CreatePost/CreatePost';
