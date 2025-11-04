@@ -22,13 +22,13 @@ const AuthProvider = ({children})=>{
                 })
             }
             catch(error){
-                // console.error("Error parsing auth data from local storage: ", error);
-                toast.error(error)
+                console.error("Error parsing auth data from local storage: ", error);
+                // toast.error(error)
             }
         }
         else{
-            // console.error("no auth data found in localStorage");
-            toast.error("No data found.");
+            console.error("no auth data found in localStorage");
+            // toast.error("No data found.");
         }
         setIsLoading(false);
     },[]);
