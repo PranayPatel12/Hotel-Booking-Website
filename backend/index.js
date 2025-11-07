@@ -32,7 +32,7 @@ app.use(fileUpload({useTempFiles : true}))
 
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // MiddleWare
 app.use(bodyParser.json());
@@ -53,5 +53,5 @@ app.use("/api/order",orderRoutes);
 
 
 app.listen(PORT, ()=>{
-    // console.log(`Server is running http://localhost:3000`);
+    console.log(`Server is running http://localhost:${PORT}`);
 })
