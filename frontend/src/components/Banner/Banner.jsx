@@ -37,7 +37,7 @@ function Banner() {
       {/* Content */}
       <div className="position-relative z-10 d-flex flex-column align-items-center justify-content-center text-white h-100 px-4 ">
         <h1 className="fw-bold text-center display-5 display-sm-4">
-          Enjoyyy your dream vacation
+          Enjoy your dream vacation
         </h1>
         <p className="fs-9 fs-sm-5 mt-2 text-center">
           Find the perfect stay with exclusive deals, premium facilities, and locations 
